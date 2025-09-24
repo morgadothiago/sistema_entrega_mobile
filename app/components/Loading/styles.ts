@@ -15,4 +15,9 @@ export const styles = StyleSheet.create({
   fundoImg: {
     flex: 1,
   },
+
+  lottie: {
+    width: 50,
+    height: 50,
+  },
 })

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet } from "react-native"
 import Loading from "./components/Loading"
+import Signin from "./Signin"
 
 export default function App() {
   const [loading, setLoading] = useState(true)
@@ -15,9 +16,7 @@ export default function App() {
     <Loading />
   ) : (
     // Tela principal
-    <View style={styles.container}>
-      <Text>Bem-vindo ao App!</Text>
-    </View>
+    <Signin />
   )
 }
 
