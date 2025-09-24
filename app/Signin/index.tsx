@@ -1,12 +1,13 @@
 import { useRouter } from "expo-router"
 import LottieView from "lottie-react-native"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Image,
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -34,6 +35,25 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  // -----------------------
+  // Controle de teclado
+  // -----------------------
+  const [keyboardVisible, setKeyboardVisible] = useState(false)
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true)
+    })
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false)
+    })
+
+    return () => {
+      showSubscription.remove()
+      hideSubscription.remove()
+    }
+  }, [])
+
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true)
     try {
@@ -50,81 +70,96 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      behavior="padding" // funciona no Android e iOS
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ImageBackground source={fundoLogo} style={styles.imgFundo}>
+        <ImageBackground
+          source={fundoLogo}
+          style={{ flex: 1 }}
+          resizeMode="cover"
+        >
           <View style={styles.overlay} />
 
-          <View style={styles.content}>
-            <Image source={Logo} style={styles.logo} />
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            style={{ flex: 1 }}
+          >
+            <View
+              style={[styles.content, { flex: 1, justifyContent: "center" }]}
+            >
+              <Image source={Logo} style={styles.logo} />
 
-            <View style={styles.form}>
-              {/* E-mail */}
-              <Controller
-                control={control}
-                name="email"
-                rules={{ required: "E-mail é obrigatório" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    icon="mail"
-                    placeholder="E-mail"
-                    placeholderTextColor="#aaa"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    containerStyle={styles.input}
-                  />
+              <View style={styles.form}>
+                {/* E-mail */}
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{ required: "E-mail é obrigatório" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      icon="mail"
+                      placeholder="E-mail"
+                      placeholderTextColor="#aaa"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      containerStyle={styles.input}
+                    />
+                  )}
+                />
+                {errors.email && (
+                  <Text style={styles.error}>{errors.email.message}</Text>
                 )}
-              />
-              {errors.email && (
-                <Text style={styles.error}>{errors.email.message}</Text>
-              )}
 
-              {/* Senha */}
-              <Controller
-                control={control}
-                name="password"
-                rules={{ required: "Senha é obrigatória" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <Input
-                    icon="lock"
-                    placeholder="Senha"
-                    placeholderTextColor="#aaa"
-                    isPassword
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    containerStyle={styles.input}
-                  />
+                {/* Senha */}
+                <Controller
+                  control={control}
+                  name="password"
+                  rules={{ required: "Senha é obrigatória" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      icon="lock"
+                      placeholder="Senha"
+                      placeholderTextColor="#aaa"
+                      isPassword
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      containerStyle={styles.input}
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <Text style={styles.error}>{errors.password.message}</Text>
                 )}
-              />
-              {errors.password && (
-                <Text style={styles.error}>{errors.password.message}</Text>
+
+                <TouchableOpacity
+                  style={[styles.button, loading && styles.buttonDisabled]}
+                  onPress={onSubmit}
+                  disabled={loading}
+                >
+                  <Text style={styles.buttonText}>Entrar</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Footer: escondido no Android quando o teclado está aberto */}
+              {!(Platform.OS === "android" && keyboardVisible) && (
+                <View style={styles.footer}>
+                  <TouchableOpacity>
+                    <Text style={styles.linkText}>Esqueci minha senha</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity>
+                    <Text style={styles.linkText}>Cadastrar-se</Text>
+                  </TouchableOpacity>
+                </View>
               )}
-
-              <TouchableOpacity
-                style={[styles.button, loading && styles.buttonDisabled]}
-                onPress={onSubmit}
-                disabled={loading}
-              >
-                <Text style={styles.buttonText}>Entrar</Text>
-              </TouchableOpacity>
             </View>
-
-            <View style={styles.footer}>
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Esqueci minha senha</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Cadastrar-se</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </ScrollView>
         </ImageBackground>
       </TouchableWithoutFeedback>
 

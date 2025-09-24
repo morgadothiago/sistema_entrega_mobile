@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet } from "react-native"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import Loading from "./components/Loading"
 import Signin from "./Signin"
 
@@ -16,7 +17,9 @@ export default function App() {
     <Loading />
   ) : (
     // Tela principal
-    <Signin />
+    <SafeAreaProvider>
+      <Signin />
+    </SafeAreaProvider>
   )
 }
 

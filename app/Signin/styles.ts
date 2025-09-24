@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { Platform, StyleSheet } from "react-native"
 import { colors } from "../theme"
 
 export const styles = StyleSheet.create({
@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     padding: 14,
     borderWidth: 1,
     borderColor: colors.buttons,
-    height: 50,
+    height: Platform.OS === "ios" ? 50 : 60,
     borderRadius: 10,
     marginBottom: 15,
     backgroundColor: colors.primary,
