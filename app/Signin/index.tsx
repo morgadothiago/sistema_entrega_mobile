@@ -168,7 +168,11 @@ export default function LoginScreen() {
               {/* Footer: escondido no Android quando o teclado está aberto */}
               {!(Platform.OS === "android" && keyboardVisible) && (
                 <View style={styles.footer}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.navigate("/forgotPassword")
+                    }}
+                  >
                     <Text style={styles.linkText}>Esqueci minha senha</Text>
                   </TouchableOpacity>
 
