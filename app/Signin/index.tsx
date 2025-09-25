@@ -21,12 +21,13 @@ import Toast from "react-native-toast-message"
 import fundoLogo from "../assets/funndo.png"
 import Logo from "../assets/logo.png"
 import Input from "../components/Input"
+import { useAuth } from "../contexts/AuthContenxt" // ✅ usar contexto
 import { loginSchema } from "../schema/loginSchema"
-import { api } from "../service/api"
 import { FormData } from "../types/FormData"
 import styles from "./styles"
 
 export default function LoginScreen() {
+  const { signIn } = useAuth() // ✅ pegar função do contexto
   const {
     control,
     handleSubmit,
@@ -59,45 +60,38 @@ export default function LoginScreen() {
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true)
     try {
-      const response = await api.post("/auth/login", data, {
-        headers: {
-          "X-User-Agent": "MeuApp/1.0",
-        },
+      // ✅ usar signIn do contexto
+      await signIn(data.email, data.password)
+
+      Toast.show({
+        type: "success",
+        text1: "Sucesso!",
+        text2: "Você fez login corretamente 👌",
       })
 
-      if (response.data) {
-        Toast.show({
-          type: "success",
-          text1: "Sucesso!",
-          text2: "Você fez login corretamente 👌",
-        })
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-        // espera 2 segundos mostrando loading + toast
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-
-        router.push("/Home")
-
-        setLoading(false)
-      }
+      router.push("/Home")
     } catch (error: any) {
       console.log("Erro no login", error)
+
+      const message =
+        error.response?.data?.message || error.message || "Tente novamente."
 
       Toast.show({
         type: "error",
         text1: "Erro no login",
-        text2: error.response?.data?.message || "Tente novamente.",
+        text2: message,
       })
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
+    } finally {
       setLoading(false)
     }
   })
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="padding" // funciona no Android e iOS
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ImageBackground
           source={fundoLogo}
