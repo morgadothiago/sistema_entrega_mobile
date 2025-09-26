@@ -1,5 +1,6 @@
 // context/AuthContext.tsx
-import * as SecureStore from "expo-secure-store"
+
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { api } from "../service/api"
 
@@ -19,34 +20,21 @@ type AuthContextData = {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
-// Chaves padronizadas do SecureStore
-const TOKEN_KEY = "token"
-const USER_KEY = "user"
+// 🔑 Chaves do AsyncStorage
+const TOKEN_KEY = "@MeuApp:token"
+const USER_KEY = "@MeuApp:user"
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // 🔹 Helpers para SecureStore
-  async function saveItem(key: string, value: string) {
-    await SecureStore.setItemAsync(key, value)
-  }
-
-  async function getItem(key: string) {
-    return await SecureStore.getItemAsync(key)
-  }
-
-  async function removeItem(key: string) {
-    await SecureStore.deleteItemAsync(key)
-  }
-
-  // Carrega token e usuário do SecureStore ao iniciar o app
+  // Carrega dados do AsyncStorage quando o app inicia
   useEffect(() => {
     async function loadStorageData() {
       try {
-        const storagedToken = await getItem(TOKEN_KEY)
-        const storagedUser = await getItem(USER_KEY)
+        const storagedToken = await AsyncStorage.getItem(TOKEN_KEY)
+        const storagedUser = await AsyncStorage.getItem(USER_KEY)
 
         if (storagedToken && storagedUser) {
           api.defaults.headers.common[
@@ -79,8 +67,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(user)
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`
 
-      await saveItem(TOKEN_KEY, token)
-      await saveItem(USER_KEY, JSON.stringify(user))
+      // Salvar no AsyncStorage
+      await AsyncStorage.setItem(TOKEN_KEY, token)
+      await AsyncStorage.setItem(USER_KEY, JSON.stringify(user))
     } catch (error: any) {
       console.error("Erro no signIn:", error)
       throw error
@@ -92,8 +81,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null)
     setToken(null)
     api.defaults.headers.common["Authorization"] = ""
-    await removeItem(TOKEN_KEY)
-    await removeItem(USER_KEY)
+
+    // Remover do AsyncStorage
+    await AsyncStorage.removeItem(TOKEN_KEY)
+    await AsyncStorage.removeItem(USER_KEY)
   }
 
   return (

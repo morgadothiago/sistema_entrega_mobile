@@ -1,29 +1,82 @@
-import React from "react"
-
-import { ImageBackground } from "expo-image"
-import { Pressable, Text, View } from "react-native"
-import { styles } from "./styles"
-
 import { Feather } from "@expo/vector-icons"
-import { router } from "expo-router"
+import { router, useNavigation } from "expo-router"
+import React, { useState } from "react"
+import { ImageBackground, Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+
 import FundoBg from "../assets/funndo.png"
 import { colors } from "../theme"
+import Step01 from "./Step01"
+import Step02 from "./Step02"
+import { styles } from "./styles"
 
-export default function forgotPassword() {
+// Array com os componentes de cada passo para facilitar a renderização e escalabilidade
+const stepsComponents = [<Step01 key="step01" />, <Step02 key="step02" />]
+
+export default function MultiStepForm() {
+  const [currentStep, setCurrentStep] = useState(0) // Começa no índice 0
+  const navigation = useNavigation()
+
+  const nextStep = () => {
+    if (currentStep < stepsComponents.length - 1) {
+      setCurrentStep((prev) => prev + 1)
+    } else {
+      // Lógica para finalizar o formulário, ex: navegar para outra tela
+      // Exemplo: navegar para a home
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1)
+    }
+  }
+
+  const isLastStep = currentStep === stepsComponents.length - 1
+
   return (
     <View style={styles.container}>
       <ImageBackground source={FundoBg} style={styles.fundoBg}>
-        <SafeAreaView style={styles.forgotPassword}>
-          <Pressable
-            style={styles.btn}
-            onPress={() => {
-              router.dismissTo("/Signin")
-            }}
-          >
-            <Feather name="arrow-left" size={30} color={colors.buttons} />
-            <Text style={styles.btnText}>Voltar</Text>
-          </Pressable>
+        <SafeAreaView style={[styles.forgotPassword, { flex: 1 }]}>
+          {/* Botão Voltar para página anterior */}
+          {navigation.canGoBack() && (
+            <Pressable style={styles.btn} onPress={() => router.back()}>
+              <Feather name="arrow-left" size={30} color={colors.buttons} />
+              <Text style={styles.btnText}>Voltar</Text>
+            </Pressable>
+          )}
+
+          {/* Conteúdo do Step */}
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            {stepsComponents[currentStep]}
+          </View>
+
+          {/* Botões de Navegação entre Steps */}
+          <View style={styles.footerButtons}>
+            {currentStep > 0 && (
+              <Pressable style={styles.footerBtn} onPress={prevStep}>
+                <Feather name="arrow-left" size={20} color={colors.primary} />
+                <Text style={styles.footerBtnText}>Anterior</Text>
+              </Pressable>
+            )}
+            <Pressable style={styles.footerBtn} onPress={nextStep}>
+              {isLastStep ? (
+                <>
+                  <Text style={styles.footerBtnText}>Finalizar</Text>
+                  <Feather name="check" size={20} color={colors.primary} />
+                </>
+              ) : (
+                <>
+                  <Text style={styles.footerBtnText}>Próximo</Text>
+                  <Feather
+                    name="arrow-right"
+                    size={20}
+                    color={colors.primary}
+                  />
+                </>
+              )}
+            </Pressable>
+          </View>
         </SafeAreaView>
       </ImageBackground>
     </View>
