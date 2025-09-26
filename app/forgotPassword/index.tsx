@@ -15,9 +15,14 @@ import { styles } from "./styles"
 
 import LottieView from "lottie-react-native"
 import { forgotPasswordSchema } from "../schema"
+import Step03 from "./Step03"
 
 // Array com os componentes de cada passo para facilitar a renderização e escalabilidade
-const stepsComponents = [<Step01 key="step01" />, <Step02 key="step02" />]
+const stepsComponents = [
+  <Step01 key="step01" />,
+  <Step02 key="step02" />,
+  <Step03 key="step03" />,
+]
 
 export default function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(0) // Começa no índice 0
@@ -43,10 +48,8 @@ export default function MultiStepForm() {
           await new Promise((resolve) => setTimeout(resolve, 2000))
 
           console.log("Dados do formulário:", methods.getValues())
-          // Ex: await submitApi(methods.getValues())
-          router.push("/Signin") // Exemplo: volta para o login
-        } finally {
-          // Não precisamos mais do setIsLoading(false) aqui, pois estamos saindo da tela.
+        } catch (err) {
+          console.log(err)
         }
         return // 🛑 IMPORTANTE: Impede a execução do resto da função
       } else {
