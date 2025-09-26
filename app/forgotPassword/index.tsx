@@ -5,6 +5,7 @@ import { ImageBackground, Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import FundoBg from "../assets/funndo.png"
+import StepIndicator from "../components/StepIndicator"
 import { colors } from "../theme"
 import Step01 from "./Step01"
 import Step02 from "./Step02"
@@ -46,10 +47,13 @@ export default function MultiStepForm() {
             </Pressable>
           )}
 
+          <StepIndicator
+            totalSteps={stepsComponents.length}
+            currentStep={currentStep}
+          />
+
           {/* Conteúdo do Step */}
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            {stepsComponents[currentStep]}
-          </View>
+          <View style={styles.content}>{stepsComponents[currentStep]}</View>
 
           {/* Botões de Navegação entre Steps */}
           <View style={styles.footerButtons}>
