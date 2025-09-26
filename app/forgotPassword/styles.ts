@@ -88,4 +88,31 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
+  buttonDisabled: {
+    backgroundColor: "#0da87aff", // cor diferente quando desabilitado
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)", // Preto com 50% de opacidade
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject, // cobre toda a tela
+    backgroundColor: "rgba(0, 0, 0, 0.6)", // fundo semitransparente
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10, // garante que fique por cima
+  },
+
+  cartAnimation: {
+    width: 120,
+    height: 120,
+    color: colors.buttons,
+    resizeMode: "cover",
+  },
+
+  loadingText: {
+    fontSize: 18,
+    color: "#0da87aff",
+    fontWeight: "bold",
+  },
 })

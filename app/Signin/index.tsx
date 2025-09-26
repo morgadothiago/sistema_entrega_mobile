@@ -22,7 +22,7 @@ import fundoLogo from "../assets/funndo.png"
 import Logo from "../assets/logo.png"
 import Input from "../components/Input"
 import { useAuth } from "../contexts/AuthContenxt" // ✅ usar contexto
-import { loginSchema } from "../schema/loginSchema"
+import { loginSchema } from "../schema"
 import { FormData } from "../types/FormData"
 import styles from "./styles"
 
