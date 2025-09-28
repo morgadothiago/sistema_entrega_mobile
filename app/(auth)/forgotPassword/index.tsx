@@ -6,15 +6,15 @@ import { FormProvider, useForm } from "react-hook-form"
 import { ImageBackground, Pressable, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-import FundoBg from "../assets/funndo.png"
-import StepIndicator from "../components/StepIndicator"
-import { colors } from "../theme"
+import FundoBg from "../../assets/funndo.png"
+import StepIndicator from "../../components/StepIndicator"
+import { colors } from "../../theme"
 import Step01 from "./Step01"
 import Step02 from "./Step02"
 import { styles } from "./styles"
 
 import LottieView from "lottie-react-native"
-import { forgotPasswordSchema } from "../schema"
+import { forgotPasswordSchema } from "../../schema"
 import Step03 from "./Step03"
 
 // Array com os componentes de cada passo para facilitar a renderização e escalabilidade
@@ -124,7 +124,7 @@ export default function MultiStepForm() {
         {isLoading && (
           <View style={styles.loadingOverlay}>
             <LottieView
-              source={require("../assets/Delivery Truck | Loading | Exporting-2.json")}
+              source={require("../../assets/Delivery Truck | Loading | Exporting-2.json")}
               autoPlay
               loop
               style={styles.cartAnimation}

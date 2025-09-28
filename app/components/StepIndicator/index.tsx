@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons"
 import React from "react"
 import { Text, View } from "react-native"
-import { styles } from "../../forgotPassword/styles"
+import { styles } from "../../(auth)/forgotPassword/styles"
 import { colors } from "../../theme"
 
 interface StepIndicatorProps {
