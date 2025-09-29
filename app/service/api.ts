@@ -1,7 +1,11 @@
 import Axios from "axios"
+import { Platform } from "react-native"
+
+const localhost =
+  Platform.OS === "ios" ? "http://localhost:3001" : "http://10.0.2.2:3001"
 
 const api = Axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: localhost,
 })
 
 async function login(data: { email: string; password: string }) {
