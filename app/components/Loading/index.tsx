@@ -5,7 +5,7 @@ import { ImageBackground, StyleSheet, View } from "react-native"
 
 import { Image } from "expo-image"
 import FundoLogo from "../../assets/funndo.png"
-import animation from "../../assets/Loading.json" // arquivo Lottie
+import animation from "../../assets/Loading.json"; // arquivo Lottie
 import Logo from "../../assets/logo.png"
 
 export default function Loading() {
