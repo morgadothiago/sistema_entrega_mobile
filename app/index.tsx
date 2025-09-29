@@ -3,10 +3,13 @@ import { StyleSheet } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import Signin from "./(auth)/Signin"
 
+import TabsLayout from "./(tabs)/_layout"
 import Loading from "./components/Loading"
+import { useAuth } from "./contexts/AuthContenxt"
 
 export default function App() {
   const [loading, setLoading] = useState(true)
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 3000)
@@ -19,7 +22,8 @@ export default function App() {
   ) : (
     // Tela principal
     <SafeAreaProvider>
-      <Signin />
+      {isAuthenticated ? <TabsLayout /> : <Signin />}
+      {/*  */}
     </SafeAreaProvider>
   )
 }

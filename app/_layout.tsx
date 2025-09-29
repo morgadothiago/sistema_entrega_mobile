@@ -1,20 +1,39 @@
 import { toastConfig } from "@/toastConfig"
-import { Stack } from "expo-router"
+import { Slot, useRouter } from "expo-router"
 import { StatusBar } from "expo-status-bar"
-import React from "react"
+import React, { useEffect } from "react"
 import Toast from "react-native-toast-message"
-import { AuthProvider } from "./contexts/AuthContenxt"
+import { AuthProvider, useAuth } from "./contexts/AuthContenxt"
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }}>
-        {/* Esse stack vai controlar qual fluxo mostrar */}
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-      <Toast config={toastConfig} />
+      <AuthGate />
     </AuthProvider>
+  )
+}
+
+function AuthGate() {
+  const { isAuthenticated, loading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading) {
+      if (isAuthenticated) {
+        router.replace("/(tabs)/Home")
+      } else {
+        router.replace("/(auth)/Signin")
+      }
+    }
+  }, [isAuthenticated, loading, router])
+
+  if (loading) return null
+
+  return (
+    <>
+      <StatusBar style="light" />
+      <Slot />
+      <Toast config={toastConfig} />
+    </>
   )
 }
