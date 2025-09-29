@@ -1,37 +1,26 @@
+import { Slot } from "expo-router"
 import React, { useEffect, useState } from "react"
-import { StyleSheet } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
-import Signin from "./(auth)/Signin"
-
-import TabsLayout from "./(tabs)/_layout"
 import Loading from "./components/Loading"
-import { useAuth } from "./contexts/AuthContenxt"
-
+import { useAuth } from "./contexts/AuthContenxt" // ✅ corrigido
 export default function App() {
-  const [loading, setLoading] = useState(true)
-  const { isAuthenticated } = useAuth()
+  const [splashLoading, setSplashLoading] = useState(true)
+  const { loading: authLoading } = useAuth()
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000)
+    const timer = setTimeout(() => setSplashLoading(false), 2500)
     return () => clearTimeout(timer)
   }, [])
 
-  return loading ? (
-    // Splash Screen
-    <Loading />
-  ) : (
-    // Tela principal
+  // Se splash ou auth estiver carregando, mostra Loading
+  if (splashLoading || authLoading) {
+    return <Loading />
+  }
+
+  // Senão, renderiza as rotas
+  return (
     <SafeAreaProvider>
-      {isAuthenticated ? <TabsLayout /> : <Signin />}
-      {/*  */}
+      <Slot />
     </SafeAreaProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-})

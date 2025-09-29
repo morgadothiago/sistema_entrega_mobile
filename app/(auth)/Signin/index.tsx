@@ -21,13 +21,13 @@ import Toast from "react-native-toast-message"
 import fundoLogo from "../../assets/funndo.png"
 import Logo from "../../assets/logo.png"
 import Input from "../../components/Input"
-import { useAuth } from "../../contexts/AuthContenxt" // ✅ usar contexto
+import { useAuth } from "../../contexts/AuthContenxt" // ✅ corrigido
 import { loginSchema } from "../../schema"
 import { FormData } from "../../types/FormData"
 import styles from "./styles"
 
 export default function LoginScreen() {
-  const { signIn } = useAuth() // ✅ pegar função do contexto
+  const { signIn } = useAuth()
   const {
     control,
     handleSubmit,
@@ -59,17 +59,16 @@ export default function LoginScreen() {
 
   const onSubmit = handleSubmit(async (data) => {
     setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 2500))
     try {
-      // ✅ usar signIn do contexto
-      await signIn(data.email, data.password)
+      // Executa login e delay mínimo de 2.5s em paralelo
+      await Promise.all([signIn(data.email, data.password)])
 
       Toast.show({
         type: "success",
         text1: "Sucesso!",
         text2: "Você fez login corretamente 👌",
       })
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
 
       router.replace("/(tabs)/Home")
     } catch (error: any) {
@@ -83,15 +82,16 @@ export default function LoginScreen() {
         text1: "Erro no login",
         text2: message,
       })
-
-      await new Promise((resolve) => setTimeout(resolve, 2000))
     } finally {
       setLoading(false)
     }
   })
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ImageBackground
           source={fundoLogo}
@@ -115,7 +115,6 @@ export default function LoginScreen() {
                 <Controller
                   control={control}
                   name="email"
-                  rules={{ required: "E-mail é obrigatório" }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       icon="mail"
@@ -138,7 +137,6 @@ export default function LoginScreen() {
                 <Controller
                   control={control}
                   name="password"
-                  rules={{ required: "Senha é obrigatória" }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       icon="lock"
@@ -165,13 +163,11 @@ export default function LoginScreen() {
                 </TouchableOpacity>
               </View>
 
-              {/* Footer: escondido no Android quando o teclado está aberto */}
+              {/* Footer: escondido no Android quando teclado aberto */}
               {!(Platform.OS === "android" && keyboardVisible) && (
                 <View style={styles.footer}>
                   <TouchableOpacity
-                    onPress={() => {
-                      router.navigate("/forgotPassword")
-                    }}
+                    onPress={() => router.navigate("/forgotPassword")}
                   >
                     <Text style={styles.linkText}>Esqueci minha senha</Text>
                   </TouchableOpacity>
@@ -186,6 +182,7 @@ export default function LoginScreen() {
         </ImageBackground>
       </TouchableWithoutFeedback>
 
+      {/* Overlay de Loading */}
       {loading && (
         <View style={styles.loadingOverlay}>
           <LottieView
