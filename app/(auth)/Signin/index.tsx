@@ -172,7 +172,9 @@ export default function LoginScreen() {
                     <Text style={styles.linkText}>Esqueci minha senha</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => router.navigate("/register")}
+                  >
                     <Text style={styles.linkText}>Cadastrar-se</Text>
                   </TouchableOpacity>
                 </View>
